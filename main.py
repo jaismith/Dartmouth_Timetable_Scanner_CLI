@@ -13,7 +13,7 @@ import requests
 
 SMS_ACTIVE = False
 TERMS = [201901]
-COURSES = [('COSC', 10517)]
+COURSES = [('COSC', '10517'), ('ARAB', '10745')]
 INTERVAL = 120
 
 # variables
@@ -79,14 +79,43 @@ for course in COURSES:
 
 
 def query_timetable():
-    response = requests.post('https://oracle-www.dartmouth.edu/dart/groucho/timetable.display_courses', headers=headers, data=data)
+    response = requests.post(
+        'https://oracle-www.dartmouth.edu/dart/groucho/' +
+        'timetable.display_courses', headers=headers, data=data)
 
     return response
 
 
-print(headers)
-print(data)
+def find_courses(timetable):
+    course_data = list()
 
-print("making query")
+    for course in COURSES:
+        crn_index = timetable.find('crn=' + course[1])
 
-print(query_timetable().text)
+        if crn_index < 0:
+            print("Error. Course not found.")
+            break
+
+        left_bound = crn_index
+
+        for i in range(8):
+            left_bound = timetable.find('<td>', left_bound + 4)
+
+        left_bound += 4
+        right_bound = timetable.find('</td>', left_bound)
+
+        course_limit = int(timetable[left_bound: right_bound])
+
+        left_bound = right_bound + 10
+        right_bound = timetable.find('</td>', left_bound)
+
+        course_enrollment = int(timetable[left_bound: right_bound])
+
+        course_data.append((course_limit, course_enrollment))
+
+    return course_data
+
+
+timetable = query_timetable()
+print('response received')
+print(find_courses(timetable.text))
