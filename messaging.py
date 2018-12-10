@@ -22,7 +22,7 @@ def configure_twilio(sid, auth_token, set_number):
     client = Client(sid, auth_token)
 
 
-def send_sms(content: str, recipient: int):
+def send_sms(content, recipient):
     message = client.messages.create(
         body=content,
         from_=number,
