@@ -1,5 +1,5 @@
 """
-setup file for Dartmouth_Timetable_Scanner
+setup script for Dartmouth_Timetable_Scanner
 
 author: Jai Smith
 date: December 2018
@@ -108,5 +108,5 @@ with open('preferences', 'wb') as f:
 
 if SMS_ACTIVE:
     print("Installing twilio package with pip...")
-    
+
     pip.main(['install', 'twilio'])
