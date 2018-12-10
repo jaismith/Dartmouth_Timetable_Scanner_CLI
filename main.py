@@ -8,10 +8,18 @@ date: December 2018
 # imports
 
 import requests
+from time import sleep
 
 # settings
 
+# for sms updates
 SMS_ACTIVE = False
+SMS_RECIPIENT = None
+TWILIO_SID = None
+TWILIO_AUTH_TOKEN = None
+TWILIO_NUMBER = None
+
+# other
 TERMS = [201901]
 COURSES = [('COSC', '10517'), ('ARAB', '10745')]
 INTERVAL = 120
@@ -116,6 +124,28 @@ def find_courses(timetable):
     return course_data
 
 
-timetable = query_timetable()
-print('response received')
-print(find_courses(timetable.text))
+# main code
+
+if SMS_ACTIVE:
+    from messaging import configure_twilio, send_sms
+
+configure_twilio(TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER)
+
+while True:
+    timetable = query_timetable()
+
+    course_data = find_courses(timetable.text)
+
+    for i in range(len(COURSES)):
+        if course_data[1] < course_data[0]:
+            message = ('Seat(s) available in {0}, {1} department.' +
+                       ' Current enrollment: {2} / {3}'
+                       ).format(COURSES[i][1], COURSES[i][0],
+                                course_data[i][1], course_data[i][0])
+
+            if SMS_ACTIVE:
+                send_sms(message, SMS_RECIPIENT)
+
+            print(message)
+
+    sleep(INTERVAL)
