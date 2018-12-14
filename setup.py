@@ -1,14 +1,16 @@
-"""
+'''
 setup script for Dartmouth_Timetable_Scanner
 
 author: Jai Smith
 date: December 2018
-"""
+'''
 
 # imports
 
-import pip
 import pickle
+import pip
+import importlib.util
+import sys
 
 # variables
 
@@ -46,7 +48,7 @@ def get_int(message):
             return token
 
         except ValueError:
-            print("Error. Please enter an integer value.")
+            print('Error. Please enter an integer value.')
             token = input(message)
 
 
@@ -62,7 +64,7 @@ def get_yes_no(message):
 
 # main code
 
-print("Running setup...")
+print('Running setup...')
 
 for query_index in range(len(queries)):
     if query_index == 0:
@@ -106,7 +108,23 @@ with open('preferences', 'wb') as f:
     pickle.dump([TERM, COURSES, INTERVAL, SMS_ACTIVE, SMS_RECIPIENT,
                  TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER], f)
 
-if SMS_ACTIVE:
-    print("Installing twilio package with pip...")
+# install packages
 
+# check for installed packages
+twilio_installed = importlib.util.find_spec('twilio')
+requests_installed = importlib.util.find_spec('requests')
+
+if SMS_ACTIVE and not twilio_installed:
+    print('Twilio package not found. Installing twilio package with pip...')
+
+    # pip
     pip.main(['install', 'twilio'])
+
+    print('')
+
+if not requests_installed:
+    print('Requests package not found. ' +
+          'Installing requests package with pip...')
+
+    # pip
+    pip.main(['install', 'requests'])
