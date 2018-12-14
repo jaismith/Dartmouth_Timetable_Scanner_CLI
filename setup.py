@@ -10,7 +10,6 @@ date: December 2018
 import pickle
 import pip
 import importlib.util
-import sys
 
 # variables
 
