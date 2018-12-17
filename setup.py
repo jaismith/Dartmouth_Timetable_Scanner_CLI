@@ -11,6 +11,13 @@ import pickle
 import pip
 import importlib.util
 
+pip_version = int(pip.__version__.split('.')[0])
+
+if pip_version >= 10:
+    from pip._internal import main as pip_main
+else:
+    from pip import main as pip_main
+
 # variables
 
 number_of_courses = None
@@ -117,7 +124,7 @@ if SMS_ACTIVE and not twilio_installed:
     print('Twilio package not found. Installing twilio package with pip...')
 
     # pip
-    pip.main(['install', 'twilio'])
+    pip_main(['install', 'twilio'])
 
     print('')
 
@@ -126,4 +133,4 @@ if not requests_installed:
           'Installing requests package with pip...')
 
     # pip
-    pip.main(['install', 'requests'])
+    pip_main(['install', 'requests'])
