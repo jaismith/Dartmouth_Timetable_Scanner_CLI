@@ -3,8 +3,8 @@ A simple program to scan the Dartmouth Timetable for open seats. Supports SMS no
 
 ### Requirements
 
-- Python 3
-- pip3
+- [Python 3](https://www.python.org/downloads/)
+- pip3 (should be installed by default with Python 3)
 
 ### Setup
 
