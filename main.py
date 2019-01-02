@@ -137,6 +137,9 @@ if SMS_ACTIVE:
 
     configure_twilio(TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER)
 
+    send_sms(str("Dartmouth_Timetable_Scanner program started and configured" +
+                 " to text this number."))
+
 while True:
     timetable = query_timetable()
 
