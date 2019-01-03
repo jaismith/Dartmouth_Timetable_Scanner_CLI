@@ -8,7 +8,7 @@ date: December 2018
 # imports
 
 import requests
-from time import sleep
+from time import sleep, time
 import pickle
 
 # settings
@@ -24,6 +24,9 @@ TWILIO_NUMBER = None
 TERM = None
 COURSES = list()
 INTERVAL = None
+
+last_scan = None
+last_update_text = None
 
 with open('preferences', 'rb') as f:
     (TERM, COURSES, INTERVAL, SMS_ACTIVE, SMS_RECIPIENT,
@@ -141,23 +144,41 @@ if SMS_ACTIVE:
                  " to text this number."), SMS_RECIPIENT)
 
 while True:
-    timetable = query_timetable()
+    if last_scan is None or time() - last_scan > INTERVAL:
+        timetable = query_timetable()
 
-    course_data = find_courses(timetable.text)
+        course_data = find_courses(timetable.text)
 
-    if len(course_data) < 1:
-        break
+        if len(course_data) < 1:
+            break
 
-    for i in range(len(COURSES)):
-        if course_data[i][1] < course_data[i][0]:
-            message = ('Seat(s) available in {0}, {1} department.' +
-                       ' Current enrollment: {2} / {3}'
-                       ).format(COURSES[i][1], COURSES[i][0],
-                                course_data[i][1], course_data[i][0])
+        for i in range(len(COURSES)):
+            if course_data[i][1] < course_data[i][0]:
+                message = ('Seat(s) available in {0}, {1} department.' +
+                           ' Current enrollment: {2} / {3}'
+                           ).format(COURSES[i][1], COURSES[i][0],
+                                    course_data[i][1], course_data[i][0])
 
-            if SMS_ACTIVE:
-                send_sms(message, SMS_RECIPIENT)
+                if SMS_ACTIVE:
+                    send_sms(message, SMS_RECIPIENT)
 
-            print(message)
+                print(message)
 
-    sleep(INTERVAL)
+        last_scan = time()
+
+    # hourly update text
+    if last_update_text is None or time() - last_update_text > 3600:
+        message = '*Hourly update*\nCourse enrollment:\n'
+        for i in range(len(COURSES)):
+            course = '{0} {1}: {2} / {3}\n'.format(COURSES[i][1],
+                                                   COURSES[i][0],
+                                                   course_data[i][1],
+                                                   course_data[i][0])
+
+            message += course
+
+        send_sms(message, SMS_RECIPIENT)
+
+        last_update_text = time()
+
+    sleep(1)
