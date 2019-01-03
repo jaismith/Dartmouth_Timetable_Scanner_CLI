@@ -34,7 +34,7 @@ queries = [
     'CRN of course #{0}: ',
     'Department of course #{0}: ',
     'Target term (numeric): ',
-    'Interval between scans (in milliseconds): ',
+    'Interval between scans (in seconds): ',
     'Enable text notifications? (y/n): ',
     'Twilio SID: ',
     'Twilio Auth Token: ',
