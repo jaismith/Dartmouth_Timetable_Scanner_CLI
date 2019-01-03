@@ -26,7 +26,7 @@ COURSES = list()
 INTERVAL = None
 
 last_scan = None
-last_update_text = None
+last_update_text = time()
 
 with open('preferences', 'rb') as f:
     (TERM, COURSES, INTERVAL, SMS_ACTIVE, SMS_RECIPIENT,
@@ -167,7 +167,7 @@ while True:
         last_scan = time()
 
     # hourly update text
-    if last_update_text is None or time() - last_update_text > 3600:
+    if time() - last_update_text > 3600:
         message = '*Hourly update*\nCourse enrollment:\n'
         for i in range(len(COURSES)):
             course = '{0} {1}: {2} / {3}\n'.format(COURSES[i][1],
