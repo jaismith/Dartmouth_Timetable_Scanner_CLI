@@ -17,6 +17,8 @@ data
 ('distribs', 'no_value')
 ('distribs_i', 'no_value')
 ('distribs_wc', 'no_value')
+('deliverymodes', 'no_value')
+('deliveryradio', 'selectdelivery')
 ('pmode', 'public')
 ('term', '')
 ('levl', '')

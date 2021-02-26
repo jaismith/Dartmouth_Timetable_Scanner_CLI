@@ -113,7 +113,7 @@ def find_courses(timetable):
 
         left_bound = crn_index
 
-        for i in range(8):
+        for i in range(9):
             left_bound = timetable.find('<td>', left_bound + 4)
 
         left_bound += 4
